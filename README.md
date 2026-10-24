@@ -90,6 +90,56 @@ Box supplies SHA-1 in its file metadata. Optional `.sha1` sidecar files may be a
 | Quick / full verification | Check the last completed part or all parts against source bytes. |
 | Cancel | Stop a transfer, preserving completed Box parts. |
 
+## Optional options and configuration
+
+These controls are optional. Availability and labels may differ by development build; inspect the installed extension and server before relying on a setting. Do not change the source identity or upload part size partway through a backup.
+
+| Option | What it does | When to use it |
+| --- | --- | --- |
+| **Fixed download block size** | Requests the source in a chosen block size (typically 1–64 MiB, with 8 MiB as the default). | Use a smaller block on unstable networks or a larger block when the source and browser handle it reliably. |
+| **Automatic block size** | Lets the uploader select a download request size. | A convenient default when manual tuning is unnecessary. |
+| **Adaptive block size** | Adjusts request sizes based on observed transfer behaviour. | Experiment with variable network conditions; compare actual throughput and error rates. |
+| **Box upload part size** | Controls the amount assembled in RAM before a Box file is uploaded. The Box Free-oriented default is 249,999,999 bytes. | Use a lower limit if required by the Box account. Keep the same value when resuming. |
+| **Explicit source capture** | Captures a selected Chrome download/link rather than guessing from browser history. | Use when a signed ChatGPT export URL needs an authenticated browser session. Check the filename and source before starting. |
+| **Saved backup selection** | Selects the precise previous transfer and destination for resume. | Always use this for interrupted backups; never silently switch to the latest Chrome download. |
+| **Quick resume verification** | Re-downloads and SHA-1-checks the last completed Box part against its original byte range. | Faster restart when earlier parts are already trusted. |
+| **Full source verification** | Checks every completed part against the corresponding source bytes, rather than only the final part. | Recommended after source-selection bugs, mismatches or before treating a backup as reliable. |
+| **Optional SHA-1 sidecars** | Records per-part checksums alongside the uploaded parts, where supported. Box metadata already exposes SHA-1. | Useful for external auditing; missing sidecars alone do not mean a part is damaged. |
+| **Archive inspection** | Examines available archive metadata without extracting the ZIP. | Check that the selected source resembles the expected export. |
+| **LZMA2 sample estimate** | Estimates potential compression savings from a small sample (for example 8–256 MiB). | Diagnostic only: **the original upload is not recompressed**. |
+| **Cancel and resume** | Stops a running transfer while retaining completed Box parts. | For interrupted sessions, expired credentials or temporary network problems. |
+
+### Optional-setting cautions
+
+- **8 MiB download blocks are not 256 MiB Box files.** The default 249,999,999-byte Box parts are approximately 238.4 MiB. A source block may cross an upload-part boundary.
+- Larger buffers use more RAM. If the Box upload fails, a part still held only in RAM may have to be fetched again.
+- Increasing parallelism or using aggressive request sizes can cause throttling or range-request failures; faster settings are not guaranteed.
+- SHA-1 checks identify byte mismatches, but full-file integrity verification after reassembly is still advisable.
+- The tool does not extract the original ZIP or automatically merge all parts into a single Box object.
+
+## Future features / roadmap
+
+These are **proposed enhancements, not features promised or implemented in v0.2.8**. Their order and feasibility depend on testing.
+
+| Priority | Planned enhancement | Intended benefit |
+| --- | --- | --- |
+| High | **OAuth 2.0 Box sign-in with refresh-token handling** | Replace short-lived developer tokens for routine use without storing credentials in the repository. |
+| High | **Persistent resumable transfer manifest** | Record source identity, length, ETag/Last-Modified where available, Box folder, part sizes, verified part IDs and timestamps. |
+| High | **End-to-end restore and verification utility** | Reassemble numbered parts and verify total bytes and SHA-256 against a recorded original digest. |
+| High | **Safer source identity checks** | Detect expired or changed signed URLs and prevent accidental mixing of unrelated downloads. |
+| High | **Automated test suite** | Cover range boundaries, failed uploads, resume, corrupted parts, token expiry and unexpected server responses. |
+| Medium | **Box large-file upload sessions** | Use Box's chunked upload API when the account plan and API permit, rather than splitting every source into independent Box files. |
+| Medium | **Improved progress dashboard** | Separate downloaded, buffered, uploaded and verified byte counters; show retries, ETA and memory use. |
+| Medium | **Pause/resume and retry controls** | Add explicit retry policies with backoff for temporary HTTP and Box API failures. |
+| Medium | **Integrity manifest alongside Box parts** | Publish checksums, part order and original filename/length without leaking signed source URLs or tokens. |
+| Medium | **Optional restore-to-disk workflow** | Download and reconstruct verified backups when the user actually wants a local copy. |
+| Medium | **Cross-platform launcher and packaging** | Support Linux/macOS startup scripts and a packaged Windows installer. |
+| Low | **Optional compression before upload** | Evaluate real streamed compression with a matching restore format; separate from the current estimate-only LZMA2 option. |
+| Low | **Optional encrypted backup parts** | Client-side encryption with documented key management and a tested restore path. |
+| Low | **Additional cloud destinations** | Consider other storage providers after Box upload/recovery is stable. |
+
+**Roadmap principle:** Prioritise correct source selection, reproducible restore and verified integrity over transfer speed. Never treat a successful Box API response alone as proof of a valid ChatGPT export backup.
+
 ## Restore the original file
 
 Download all numbered Box parts in order and **concatenate their raw binary bytes**; do not extract each part as a ZIP. Verify the reconstructed file's total byte count and full-file digest against the original source when possible.
