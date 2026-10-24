@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.env
+.env.*
+*.log
+*.part
+*.part[0-9]*
+*.sha1
+*.zip
+*.token
+*secret*
+*credentials*

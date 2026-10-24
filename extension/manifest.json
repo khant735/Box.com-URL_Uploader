@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "Download to Box Stream (experimental)",
+  "version": "0.2.8",
+  "description": "Safety hotfix: pin transfer source; no implicit latest download; source fingerprint",
+  "permissions": [
+    "storage",
+    "downloads",
+    "permissions"
+  ],
+  "host_permissions": [
+    "https://chatgpt.com/*",
+    "http://127.0.0.1:8765/*",
+    "https://mail.google.com/*"
+  ],
+  "background": {
+    "service_worker": "worker.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "ChatGPT to Box settings"
+  },
+  "optional_host_permissions": [
+    "https://*/*",
+    "http://localhost/*",
+    "http://127.0.0.1/*"
+  ]
+}
