@@ -32,6 +32,20 @@ Box folder: archive.zip.part001, .part002, ...
 
 The application does not intentionally write the complete original ZIP to a local HDD/SSD. This is **not** a guarantee that the browser, operating system, swap/pagefile, caches or crash dumps never write temporary data.
 
+## Application screenshots
+
+The following screenshots show the project's Chrome extension and transfer workflow at different points in the interface. Original screenshots have been preserved without editing; labels are numbered because the image content has not been independently classified.
+
+| Screenshot | Preview |
+| --- | --- |
+| Application screenshot 01 | ![Box.com URL Uploader application screenshot 01](docs/images/box-url-uploader-screenshot-01.png) |
+| Application screenshot 02 | ![Box.com URL Uploader application screenshot 02](docs/images/box-url-uploader-screenshot-02.png) |
+| Application screenshot 03 | ![Box.com URL Uploader application screenshot 03](docs/images/box-url-uploader-screenshot-03.png) |
+| Application screenshot 04 | ![Box.com URL Uploader application screenshot 04](docs/images/box-url-uploader-screenshot-04.png) |
+| Application screenshot 05 | ![Box.com URL Uploader application screenshot 05](docs/images/box-url-uploader-screenshot-05.png) |
+| Application screenshot 06 | ![Box.com URL Uploader application screenshot 06](docs/images/box-url-uploader-screenshot-06.png) |
+| Application screenshot 07 | ![Box.com URL Uploader application screenshot 07](docs/images/box-url-uploader-screenshot-07.png) |
+
 ## Requirements
 
 - Windows and Python 3 (the supplied `Run-Server.bat` starts `server.py`), or another OS running the Python server manually.
